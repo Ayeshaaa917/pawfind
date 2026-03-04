@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 
-export default function PostPetForm({ type }: { type: "lost" | "found" }) {
+export default function PostPetForm({ type: _type }: { type: "lost" | "found" }) {
   const [form, setForm] = useState({ name: "", breed: "", location: "", reward: "0.01" });
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
