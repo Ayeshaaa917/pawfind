@@ -1,5 +1,5 @@
-import { ConnectWallet } from "@coinbase/onchainkit/wallet";
 "use client";
+import { ConnectWallet } from "@coinbase/onchainkit/wallet";
 import { useState } from "react";
 import LostFeed from "@/components/LostFeed";
 import PostPetForm from "@/components/PostPetForm";
