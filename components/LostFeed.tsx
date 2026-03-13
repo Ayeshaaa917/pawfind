@@ -33,7 +33,7 @@ export default function LostFeed() {
       const logs = await client.getLogs({
         address: CONTRACT as `0x${string}`,
         event: ABI[0],
-        fromBlock: 0,
+        fromBlock: "earliest",
       });
 
       const parsed = logs.map((log: any) => ({
