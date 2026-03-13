@@ -1,4 +1,5 @@
 "use client";
+
 import { ConnectWallet } from "@coinbase/onchainkit/wallet";
 import { useState } from "react";
 import LostFeed from "@/components/LostFeed";
@@ -12,15 +13,17 @@ export default function HomePage() {
   const [activeTab, setActiveTab] = useState<Tab>("feed");
 
   return (
-    <main style={{
-  minHeight:"100vh",
-  background:"#0d0d0d",
-  color:"white",
-  fontFamily:"sans-serif",
-  paddingBottom:"96px",
-  position:"relative",
-  zIndex:1
-}}
+    <main
+      style={{
+        minHeight: "100vh",
+        background: "#0d0d0d",
+        color: "white",
+        fontFamily: "sans-serif",
+        paddingBottom: "96px",
+        position: "relative",
+        zIndex: 1
+      }}
+    >
       <header style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"24px 20px 16px",borderBottom:"1px solid rgba(255,255,255,0.1)"}}>
         <div style={{display:"flex",alignItems:"center",gap:"8px"}}>
           <span style={{fontSize:"24px"}}>🐾</span>
