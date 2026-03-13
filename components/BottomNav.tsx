@@ -16,7 +16,13 @@ export default function BottomNav({
   setActiveTab: (tab: Tab) => void;
 }) {
   return (
-    <nav style={{position:'fixed', bottom:0, left:0, right:0, background:'rgba(13,13,13,0.95)', borderTop:'1px solid rgba(255,255,255,0.1)', padding:'12px 16px'}}>
+    <nav style={{
+  position:"fixed",
+  bottom:0,
+  left:0,
+  right:0,
+  zIndex:10
+}}>
       <div style={{display:'flex', justifyContent:'space-around', maxWidth:'400px', margin:'0 auto'}}>
         {tabs.map((tab) => (
           <button
