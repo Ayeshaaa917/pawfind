@@ -1,24 +1,90 @@
 "use client";
+
 import { useState } from "react";
+import { useWriteContract } from "wagmi";
+import { parseEther } from "viem";
+
+const CONTRACT_ADDRESS = "0xfe71e8bb0be8adc089827208c1e66e2ef3d0bcfc";
+
+const ABI = [
+  {
+    name: "reportLostPet",
+    type: "function",
+    stateMutability: "payable",
+    inputs: [{ name: "cid", type: "string" }],
+    outputs: []
+  }
+];
 
 export default function PostPetForm({ type: _type }: { type: "lost" | "found" }) {
-  const [form, setForm] = useState({ name: "", breed: "", location: "", reward: "0.01" });
+
+  const { writeContractAsync } = useWriteContract();
+
+  const [form, setForm] = useState({
+    name: "",
+    breed: "",
+    location: "",
+    reward: "0.01"
+  });
+
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
     setImagePreview(URL.createObjectURL(file));
   };
+
+  async function handleSubmit() {
+    try {
+
+      setLoading(true);
+
+      await writeContractAsync({
+        address: CONTRACT_ADDRESS,
+        abi: ABI,
+        functionName: "reportLostPet",
+        args: ["placeholder-cid"], 
+        value: parseEther(form.reward)
+      });
+
+      setSubmitted(true);
+
+    } catch (err) {
+      console.error(err);
+      alert("Transaction failed");
+
+    } finally {
+      setLoading(false);
+    }
+  }
 
   if (submitted) {
     return (
       <div style={{textAlign:"center",padding:"64px 0"}}>
         <div style={{fontSize:"48px"}}>🐾</div>
-        <h2 style={{color:"#fbbf24"}}>Posted on Base!</h2>
-        <p style={{color:"rgba(255,255,255,0.5)"}}>Your post is live. {form.reward} ETH locked in escrow.</p>
-        <button onClick={() => setSubmitted(false)} style={{padding:"12px 24px",background:"#fbbf24",color:"black",fontWeight:"bold",borderRadius:"12px",border:"none",cursor:"pointer"}}>
+
+        <h2 style={{color:"#fbbf24"}}>Posted On-Chain!</h2>
+
+        <p style={{color:"rgba(255,255,255,0.5)"}}>
+          Your post is now stored on Base.
+        </p>
+
+        <button
+          onClick={() => setSubmitted(false)}
+          style={{
+            padding:"12px 24px",
+            background:"#fbbf24",
+            color:"black",
+            fontWeight:"bold",
+            borderRadius:"12px",
+            border:"none",
+            cursor:"pointer"
+          }}
+        >
           Post Another
         </button>
       </div>
@@ -26,51 +92,108 @@ export default function PostPetForm({ type: _type }: { type: "lost" | "found" })
   }
 
   return (
+
     <div style={{display:"flex",flexDirection:"column",gap:"16px"}}>
+
       <div>
-        <h2 style={{fontSize:"18px",fontWeight:"bold",color:"white",margin:"0 0 4px"}}>Report a Lost Pet 🐾</h2>
-        <p style={{color:"rgba(255,255,255,0.4)",fontSize:"12px",margin:0}}>Lock ETH reward — paid when your pet is found</p>
+        <h2 style={{fontSize:"18px",fontWeight:"bold",color:"white",margin:"0 0 4px"}}>
+          Report Lost Pet 🐾
+        </h2>
+
+        <p style={{color:"rgba(255,255,255,0.4)",fontSize:"12px",margin:0}}>
+          Optional reward locked in smart contract
+        </p>
       </div>
+
       <label style={{cursor:"pointer"}}>
-        <div style={{borderRadius:"16px",border:"2px dashed rgba(255,255,255,0.2)",height:imagePreview?"160px":"112px",display:"flex",alignItems:"center",justifyContent:"center",overflow:"hidden"}}>
-          {imagePreview
-            ? <img src={imagePreview} style={{width:"100%",height:"100%",objectFit:"cover"}} alt="preview" />
-            : <div style={{textAlign:"center"}}><div style={{fontSize:"32px"}}>📷</div><p style={{color:"rgba(255,255,255,0.4)",fontSize:"12px"}}>Tap to upload photo</p></div>
-          }
+
+        <div
+          style={{
+            borderRadius:"16px",
+            border:"2px dashed rgba(255,255,255,0.2)",
+            height:imagePreview ? "160px" : "112px",
+            display:"flex",
+            alignItems:"center",
+            justifyContent:"center",
+            overflow:"hidden"
+          }}
+        >
+
+          {imagePreview ? (
+            <img
+              src={imagePreview}
+              style={{width:"100%",height:"100%",objectFit:"cover"}}
+              alt="preview"
+            />
+          ) : (
+            <div style={{textAlign:"center"}}>
+              <div style={{fontSize:"32px"}}>📷</div>
+              <p style={{color:"rgba(255,255,255,0.4)",fontSize:"12px"}}>
+                Upload Photo
+              </p>
+            </div>
+          )}
+
         </div>
-        <input type="file" accept="image/*" style={{display:"none"}} onChange={handleImage} />
+
+        <input
+          type="file"
+          accept="image/*"
+          style={{display:"none"}}
+          onChange={handleImage}
+        />
+
       </label>
-      {[
-        {key:"name",label:"Pet Name *",placeholder:"e.g. Mochi"},
-        {key:"breed",label:"Breed",placeholder:"e.g. Shiba Inu"},
-        {key:"location",label:"Last Seen Location *",placeholder:"e.g. Central Park, NYC"},
-      ].map(({key,label,placeholder}) => (
-        <div key={key}>
-          <label style={{fontSize:"12px",color:"rgba(255,255,255,0.5)",display:"block",marginBottom:"4px"}}>{label}</label>
-          <input
-            type="text"
-            placeholder={placeholder}
-            value={form[key as keyof typeof form]}
-            onChange={(e) => setForm({...form,[key]:e.target.value})}
-            style={{width:"100%",background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:"12px",padding:"12px 16px",fontSize:"14px",color:"white",outline:"none",boxSizing:"border-box"}}
-          />
-        </div>
+
+      {["name","breed","location"].map((field) => (
+
+        <input
+          key={field}
+          placeholder={field}
+          value={(form as any)[field]}
+          onChange={(e)=>setForm({...form,[field]:e.target.value})}
+          style={{
+            width:"100%",
+            background:"rgba(255,255,255,0.05)",
+            border:"1px solid rgba(255,255,255,0.1)",
+            borderRadius:"12px",
+            padding:"12px",
+            color:"white"
+          }}
+        />
+
       ))}
-      <div>
-        <label style={{fontSize:"12px",color:"rgba(255,255,255,0.5)",display:"block",marginBottom:"4px"}}>Reward (ETH)</label>
-        <div style={{display:"flex",gap:"8px"}}>
-          {["0.005","0.01","0.05","0.1"].map((val) => (
-            <button key={val} onClick={() => setForm({...form,reward:val})}
-              style={{flex:1,padding:"8px",borderRadius:"12px",border:"none",cursor:"pointer",fontSize:"12px",fontWeight:"500",background:form.reward===val?"#fbbf24":"rgba(255,255,255,0.05)",color:form.reward===val?"black":"rgba(255,255,255,0.5)"}}>
-              {val}
-            </button>
-          ))}
-        </div>
-      </div>
-      <button onClick={() => setSubmitted(true)}
-        style={{width:"100%",padding:"16px",background:"#fbbf24",color:"black",fontWeight:"bold",borderRadius:"12px",border:"none",cursor:"pointer",fontSize:"14px"}}>
-        Post + Lock {form.reward} ETH Reward
+
+      <input
+        placeholder="Reward ETH"
+        value={form.reward}
+        onChange={(e)=>setForm({...form,reward:e.target.value})}
+        style={{
+          width:"100%",
+          background:"rgba(255,255,255,0.05)",
+          border:"1px solid rgba(255,255,255,0.1)",
+          borderRadius:"12px",
+          padding:"12px",
+          color:"white"
+        }}
+      />
+
+      <button
+        onClick={handleSubmit}
+        disabled={loading}
+        style={{
+          padding:"16px",
+          background:"#fbbf24",
+          color:"black",
+          fontWeight:"bold",
+          borderRadius:"12px",
+          border:"none",
+          cursor:"pointer"
+        }}
+      >
+        {loading ? "Sending Transaction..." : `Post + Lock ${form.reward} ETH`}
       </button>
+
     </div>
   );
 }
