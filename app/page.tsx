@@ -1,5 +1,5 @@
 "use client";
-import { ConnectWallet } from "@coinbase/onchainkit/wallet";
+import { Wallet } from "@coinbase/onchainkit/wallet";
 import { useState } from "react";
 import LostFeed from "@/components/LostFeed";
 import PostPetForm from "@/components/PostPetForm";
@@ -18,7 +18,7 @@ export default function HomePage() {
           <span style={{fontSize:"24px"}}>🐾</span>
           <span style={{fontSize:"20px",fontWeight:"bold",color:"#fbbf24"}}>PawFind</span>
         </div>
-        <ConnectWallet />
+        <Wallet />
       </header>
       <div style={{padding:"16px"}}>
         {activeTab === "feed" && <LostFeed />}
