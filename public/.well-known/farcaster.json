@@ -1,0 +1,17 @@
+{
+  "accountAssociation": {
+    "header": "",
+    "payload": "",
+    "signature": ""
+  },
+  "frame": {
+    "version": "1",
+    "name": "PawFind",
+    "iconUrl": "https://pawfind-sandy.vercel.app/icon.png",
+    "homeUrl": "https://pawfind-sandy.vercel.app",
+    "imageUrl": "https://pawfind-sandy.vercel.app/og-image.png",
+    "buttonTitle": "Open PawFind",
+    "splashImageUrl": "https://pawfind-sandy.vercel.app/splash.png",
+    "splashBackgroundColor": "#ffffff"
+  }
+}
