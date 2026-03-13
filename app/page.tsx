@@ -18,7 +18,7 @@ export default function HomePage() {
           <span style={{fontSize:"24px"}}>🐾</span>
           <span style={{fontSize:"20px",fontWeight:"bold",color:"#fbbf24"}}>PawFind</span>
         </div>
-        <span style={{fontSize:"12px",color:"rgba(255,255,255,0.4)"}}>Base Network</span>
+        <ConnectWallet />
       </header>
       <div style={{padding:"16px"}}>
         {activeTab === "feed" && <LostFeed />}
