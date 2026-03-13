@@ -1,3 +1,4 @@
+import { ConnectWallet } from "@coinbase/onchainkit/wallet";
 "use client";
 import { useState } from "react";
 import LostFeed from "@/components/LostFeed";
