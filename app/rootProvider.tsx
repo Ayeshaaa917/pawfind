@@ -1,4 +1,5 @@
 "use client";
+
 import { ReactNode } from "react";
 import { base } from "wagmi/chains";
 import { OnchainKitProvider } from "@coinbase/onchainkit";
@@ -8,7 +9,6 @@ export function RootProvider({ children }: { children: ReactNode }) {
   return (
     <OnchainKitProvider
       apiKey={process.env.NEXT_PUBLIC_ONCHAINKIT_API_KEY}
-      projectId="3d290e734ed1443401e6d508f05eff78"
       chain={base}
     >
       {children}
